@@ -59,8 +59,8 @@ if len(sys.argv) > 1 and sys.argv[1].strip() != "":
         sys.exit(1)
 
 def main():
-    print("=== OPERATIONS: Sales by Day ===\n")
-    print("--- Sales by Day ---")
+    print("=== OPERATIONS: Sales by Day ===")
+    print()
 
     raw_data = get_raw_sales_data(seed)
     cleaned = clean_sales_data(raw_data)
