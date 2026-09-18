@@ -1,6 +1,15 @@
 Write your reflection here.
 
-See reflection.md for what makes a good reflection — be specific, use the
-terminology from this assignment (package, module, ETL, coercion, public API,
-relative import, accumulator, group by, unit vs. integration test), and make it
-actionable.
+This lab overall went better than last week's. I was able to complete it without any outstanding technical issues, and I think that
+I learned how to correct mistakes and understand the overall set up better as the lab went on. One thing that has been an issue
+for me is understanding what each part of the lab is doing. For example, I understood that transform.py was where all of my functions
+were defined and lived. The Public API also made sense, as it was storing the functions and making sure that I could call and use
+them in a public interface. Finally, I understood how each report should work and how they were calling the functions from my Public API.
+I think what confused me was why all of these different sections were important to separate. It started to make sense as I was 
+working through fixing all of the integration errors. I was able to change issues in each reports super fast, and understand 
+exactly where the issues were occuring instead of having to go through each report and tediously add breakpoints and manually 
+examine each line of code. I know that this structure would be helpful if I had to create a new report as well. I wouldn't have to
+create any new functions and it would be structured with the same logic and layout. That was my biggest takeaway from the lab.
+In the future, I hope that I will not have to rely on the course chat bot as much to help me with the specific code. i find it hard
+to understand the intructions when it comes to actually writing the code, so i relied on the chatbot a good bit. I was able to 
+gain more skills in debugging, though, and was able to do that without as much help. 

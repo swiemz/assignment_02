@@ -47,9 +47,13 @@ def clean_currency(value) -> float:
       from the `except`. That is the line that stops one `"N/A"` from killing a
       report of 400 good rows.
     """
-    # TODO: your code here
-    pass
-
+    if value is None:
+        return 0.0
+    cleaned = str(value).replace('$', '').replace(',', '').strip()
+    try:
+        return float(cleaned)
+    except ValueError:
+        return 0.0
 
 def clean_quantity(value) -> int:
     """Convert a raw quantity into an int, using 0 when it cannot be read.
@@ -73,9 +77,13 @@ def clean_quantity(value) -> int:
     - Do not try to translate `"one"` into `1`. A word in a number field is bad
       data, and bad data becomes `0`.
     """
-    # TODO: your code here
-    pass
-
+    if value is None:
+        return 0
+    try:
+        cleaned = int(str(value).strip())
+        return cleaned
+    except ValueError:
+        return 0
 
 def clean_sales_data(raw_data: list[dict]) -> list[dict]:
     """Clean every raw row and add the revenue it earned.
@@ -104,9 +112,22 @@ def clean_sales_data(raw_data: list[dict]) -> list[dict]:
       cleaned `price` and `qty` you just stored instead of cleaning the raw values
       a second time.
     """
-    # TODO: your code here
-    pass
 
+    cleaned_data = []
+    for row in raw_data:
+        price = clean_currency(row["price"])
+        qty = clean_quantity(row["qty"])
+        total_revenue = price * qty
+
+        cleaned_row = {
+            "date": row["date"],
+            "item": row["item"],
+            "price": price,
+            "qty": qty,
+            "total_revenue": total_revenue
+        }
+        cleaned_data.append(cleaned_row) 
+    return cleaned_data
 
 def calculate_total_revenue(cleaned_data: list[dict]) -> float:
     """Add up the revenue of every cleaned row.
@@ -128,9 +149,11 @@ def calculate_total_revenue(cleaned_data: list[dict]) -> float:
     - Nothing needs cleaning here. These rows already went through
       `clean_sales_data`, so `row["total_revenue"]` is a number you can trust.
     """
-    # TODO: your code here
-    pass
 
+    total = 0.0  
+    for row in cleaned_data:  
+        total += row["total_revenue"]
+    return total 
 
 def summarize_by_item(cleaned_data: list[dict]) -> list[dict]:
     """Roll the row-level data up to one entry per item.
@@ -163,8 +186,22 @@ def summarize_by_item(cleaned_data: list[dict]) -> list[dict]:
       `key=lambda entry: (-entry["revenue"], entry["item"])`. The tuple reads as
       "sort by revenue, biggest first, and use the name to break ties."
     """
-    # TODO: your code here
-    pass
+
+    summary = {}
+    for row in cleaned_data:
+        item = row["item"]
+        if item not in summary:
+            summary[item] = {
+                "item": item,
+                "units_sold": 0,
+                "revenue": 0.0
+            }
+        summary[item]["units_sold"] += row["qty"]
+        summary[item]["revenue"] += row["total_revenue"] 
+
+    summary_list = list(summary.values())
+    summary_list.sort(key=lambda x: (-x["revenue"], x["item"]))
+    return summary_list
 
 
 def summarize_by_day(cleaned_data: list[dict]) -> list[dict]:
@@ -197,8 +234,19 @@ def summarize_by_day(cleaned_data: list[dict]) -> list[dict]:
       twice under two spellings. Do still guard the "first time I have seen this
       date" case, or the first row of each day has nothing to add itself to.
     """
-    # TODO: your code here
-    pass
+    summary = {}
+
+    for row in cleaned_data:
+        date = row["date"]
+        if date not in summary:
+            summary[date] = {"date": date, "units_sold": 0, "revenue": 0.0}
+        summary[date]["units_sold"] += row["qty"]
+        summary[date]["revenue"] += row["total_revenue"]
+
+    summary_list = list(summary.values())
+    summary_list.sort(key=lambda entry: entry["date"]) 
+
+    return summary_list
 
 
 def find_top_entry(summary: list[dict], field: str = "revenue") -> dict:
@@ -231,5 +279,16 @@ def find_top_entry(summary: list[dict], field: str = "revenue") -> dict:
       by revenue. It is only sorted by *revenue*, so that answer is wrong the moment
       someone asks for `units_sold`.
     """
-    # TODO: your code here
-    pass
+    if not summary:
+        return {}
+
+    top_entry = summary[0]
+
+  
+    for entry in summary[1:]:
+      
+        if entry[field] > top_entry[field]:
+            top_entry = entry
+
+    return top_entry
+    

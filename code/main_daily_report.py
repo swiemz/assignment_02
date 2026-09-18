@@ -39,3 +39,42 @@ Before running:  pip install -r requirements.txt
 # The rules have not changed: no arithmetic and no formatting logic in a report. If
 # you need a calculation this file cannot get by calling the package, the
 # calculation belongs in sales_pipeline/transform.py.
+
+import sys
+from sales_pipeline import (
+    get_raw_sales_data,
+    clean_sales_data,
+    summarize_by_day,
+    calculate_total_revenue,
+    find_top_entry,
+    print_day_table,  
+)
+
+seed = None
+if len(sys.argv) > 1 and sys.argv[1].strip() != "":
+    try:
+        seed = int(sys.argv[1])
+    except ValueError:
+        print("Seed must be an integer")
+        sys.exit(1)
+
+def main():
+    print("=== OPERATIONS: Sales by Day ===\n")
+    print("--- Sales by Day ---")
+
+    raw_data = get_raw_sales_data(seed)
+    cleaned = clean_sales_data(raw_data)
+    daily_summary = summarize_by_day(cleaned)
+    total_revenue = calculate_total_revenue(cleaned)
+    busiest_by_revenue = find_top_entry(daily_summary, field="revenue")
+    busiest_by_units = find_top_entry(daily_summary, field="units_sold")
+
+    print_day_table(daily_summary)
+
+    print()
+    print(f"Total Revenue:          ${total_revenue:,.2f}")
+    print(f"Busiest day by revenue: {busiest_by_revenue['date']} (${busiest_by_revenue['revenue']:,.2f})")
+    print(f"Busiest day by units:   {busiest_by_units['date']} ({busiest_by_units['units_sold']} units)")
+
+if __name__ == "__main__":
+    main()
